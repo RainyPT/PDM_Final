@@ -7,5 +7,4 @@ public class UniClass {
     int IDC;
     ArrayList<ArrayList<String>> classScheduleAndType;//ficam em string ambos, tipo Friday 11:00, T
 
-
 }
