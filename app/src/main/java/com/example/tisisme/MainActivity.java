@@ -11,6 +11,7 @@ import android.widget.*;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,12 +24,14 @@ import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
     EditText usernameTextBox,passwordTextBox;
+    RequestQueue queue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         usernameTextBox=findViewById(R.id.usernameTextBoxRegister);
         passwordTextBox=findViewById(R.id.passwordTextBoxRegister);
+        queue = Volley.newRequestQueue(this);
     }
 
     public void registerEvent(View v) throws JSONException{
@@ -36,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonOBJ = new JSONObject();
             jsonOBJ.put("username", usernameTextBox.getText().toString());
             jsonOBJ.put("password", passwordTextBox.getText().toString());
-            RequestQueue queue = Volley.newRequestQueue(this);
             JsonObjectRequest jsObjRequest =
                     new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/registerUser",
                             jsonOBJ,
@@ -52,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
                             }), (error -> {
-                        Toast.makeText(this, "Não foi possivel criar o utilizador.", Toast.LENGTH_SHORT).show();
-                    }));
+                                Toast.makeText(this, "Algo correu mal...", Toast.LENGTH_SHORT).show();
+                            }));
             queue.add(jsObjRequest);
+        }
+        else{
+            Toast.makeText(this, "Preenche todos os campos.", Toast.LENGTH_SHORT).show();
         }
     }
     private void switchToLogin(){
