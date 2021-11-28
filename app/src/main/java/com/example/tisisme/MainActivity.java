@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
-    EditText usernameTextBox,passwordTextBox;
+    EditText usernameTextBox,passwordTextBox,emailTextBoxRegister;
     RequestQueue queue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +31,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         usernameTextBox=findViewById(R.id.usernameTextBoxRegister);
         passwordTextBox=findViewById(R.id.passwordTextBoxRegister);
+        emailTextBoxRegister=findViewById(R.id.emailTextBoxRegister);
         queue = Volley.newRequestQueue(this);
     }
 
     public void registerEvent(View v) throws JSONException{
         if(!usernameTextBox.getText().toString().isEmpty() && !passwordTextBox.getText().toString().isEmpty()) {
             JSONObject jsonOBJ = new JSONObject();
-            jsonOBJ.put("username", usernameTextBox.getText().toString());
+            jsonOBJ.put("numero", usernameTextBox.getText().toString());
+            jsonOBJ.put("email", emailTextBoxRegister.getText().toString());
             jsonOBJ.put("password", passwordTextBox.getText().toString());
             JsonObjectRequest jsObjRequest =
                     new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/registerUser",

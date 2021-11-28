@@ -2,7 +2,9 @@ package com.example.tisisme;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText passBox,userBox;
     RequestQueue queue;
     APIHelper apiHelper;
+    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,18 +38,29 @@ public class LoginActivity extends AppCompatActivity {
             passBox.setText(fromRegister.getStringExtra("RegisterPass"));
         }
     }
-    public void LoginEvent(View v) throws JSONException, InterruptedException {
+    private void initSharedPref(int numeroA){
+        sp=getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putInt("NumeroA",numeroA);
+        editor.commit();
+    }
+    private void changeToDashboard(int numeroA){
+        Intent i= new Intent(this,DashboardAlunoActivity.class);
+        initSharedPref(numeroA);
+        startActivity(i);
+    }
+    public void LoginEvent(View v) throws JSONException{
         if(!userBox.getText().toString().isEmpty() && !passBox.getText().toString().isEmpty()) {
             JSONObject jsonOBJ = new JSONObject();
-            jsonOBJ.put("username", userBox.getText().toString());
+            jsonOBJ.put("numero", userBox.getText().toString());
             jsonOBJ.put("password", passBox.getText().toString());
-           /* JsonObjectRequest jsObjRequest =
+            JsonObjectRequest jsObjRequest =
                     new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/login",
                             jsonOBJ,
                             (response -> {
                                 try {
                                     if (response.getInt("status") == 1) {
-                                        Toast.makeText(this, "Loggado!", Toast.LENGTH_SHORT).show();
+                                        changeToDashboard(response.getInt("numeroA"));
                                     } else {
                                         Toast.makeText(this, "Credenciais ou Password errada.", Toast.LENGTH_SHORT).show();
                                     }
@@ -56,15 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                             }), (error -> {
                         Toast.makeText(this, "Algo correu mal...", Toast.LENGTH_SHORT).show();
                     }));
-            queue.add(jsObjRequest);*/
-            JSONObject receivedObj=apiHelper.sendPost(jsonOBJ,"/login");
-            if(receivedObj.length()>0){
-                if (receivedObj.getInt("status") == 1) {
-                    Toast.makeText(this, "Loggado!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Credenciais ou Password errada.", Toast.LENGTH_SHORT).show();
-                }
-            }
+            queue.add(jsObjRequest);
         }
         else{
             Toast.makeText(this, "Preenche todos os campos.", Toast.LENGTH_SHORT).show();
