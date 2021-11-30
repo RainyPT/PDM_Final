@@ -4,23 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
     EditText usernameTextBox,passwordTextBox,emailTextBoxRegister;
@@ -29,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        usernameTextBox=findViewById(R.id.usernameTextBoxRegister);
-        passwordTextBox=findViewById(R.id.passwordTextBoxRegister);
-        emailTextBoxRegister=findViewById(R.id.emailTextBoxRegister);
+        usernameTextBox=findViewById(R.id.usernameTextBoxRegisterProfs);
+        passwordTextBox=findViewById(R.id.passwordTextBoxRegisterProfs);
+        emailTextBoxRegister=findViewById(R.id.emailTextBoxRegisterProfs);
         queue = Volley.newRequestQueue(this);
     }
 
@@ -42,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             jsonOBJ.put("email", emailTextBoxRegister.getText().toString());
             jsonOBJ.put("password", passwordTextBox.getText().toString());
             JsonObjectRequest jsObjRequest =
-                    new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/registerUser",
+                    new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/register",
                             jsonOBJ,
                             (response -> {
                                 try {
@@ -65,11 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void switchToLogin(){
-        Intent i=new Intent(this, LoginActivity.class);
+        Intent i=new Intent(this, LoginAlunosActivity.class);
         i.putExtra("RegisterNome",usernameTextBox.getText().toString());
         i.putExtra("RegisterPass",passwordTextBox.getText().toString());
         startActivity(i);
-        this.finish();
 
     }
 }

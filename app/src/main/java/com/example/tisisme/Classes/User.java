@@ -3,22 +3,51 @@ package com.example.tisisme.Classes;
 import java.util.ArrayList;
 
 public class User {
-    int IDU;
-    String fullName,username,password,type;
-    ArrayList<String> studies;
-    ArrayList<UniCourse> uniCourses;
+    private int ID;
+    private String firstName,SecondName;
+    private String email;
+    public User(int ID, String firstName, String secondName, String email) {
+        this.ID = ID;
+        this.firstName = firstName;
+        SecondName = secondName;
+        this.email = email;
+    }
+    public User(String firstName,String secondName,String email) {
+        this.firstName = firstName;
+        SecondName = secondName;
+        this.email = email;
+    }
 
-    public User(){
+    public int getID() {
+        return ID;
+    }
 
+    public void setID(int ID) {
+        this.ID = ID;
     }
-    public User(String u,String p){
-        this.username=u;
-        this.password=p;
+
+    public String getFirstName() {
+        return firstName;
     }
-    public String getPassword(){
-        return this.password;
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
-    public String getUsername(){
-        return this.username;
+
+    public String getSecondName() {
+        return SecondName;
     }
+
+    public void setSecondName(String secondName) {
+        SecondName = secondName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

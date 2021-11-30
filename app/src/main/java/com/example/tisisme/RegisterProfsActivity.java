@@ -2,7 +2,6 @@ package com.example.tisisme;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,51 +17,35 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity {
-    EditText passBox,userBox;
+public class RegisterProfsActivity extends AppCompatActivity {
+    EditText userBox,passBox,emailBox;
     RequestQueue queue;
-    APIHelper apiHelper;
-    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        passBox=findViewById(R.id.passwordTextBoxLogin);
-        userBox=findViewById(R.id.usernameTextBoxLogin);
+        setContentView(R.layout.activity_register_profs);
+        userBox=findViewById(R.id.usernameTextBoxRegisterProfs);
+        passBox=findViewById(R.id.passwordTextBoxRegisterProfs);
+        emailBox=findViewById(R.id.emailTextBoxRegisterProfs);
         queue = Volley.newRequestQueue(this);
-        apiHelper=new APIHelper(this);
-        Intent fromRegister=getIntent();
-        //if user comes from MainActivity.
-        if(fromRegister.getStringExtra("RegisterNome")!=null && fromRegister.getStringExtra("RegisterPass")!=null){
-            userBox.setText(fromRegister.getStringExtra("RegisterNome"));
-            passBox.setText(fromRegister.getStringExtra("RegisterPass"));
-        }
     }
-    private void initSharedPref(int numeroA){
-        sp=getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sp.edit();
-        editor.putInt("NumeroA",numeroA);
-        editor.commit();
-    }
-    private void changeToDashboard(int numeroA){
-        Intent i= new Intent(this,DashboardAlunoActivity.class);
-        initSharedPref(numeroA);
-        startActivity(i);
-    }
-    public void LoginEvent(View v) throws JSONException{
+    public void registerProfEvent(View v) throws JSONException {
         if(!userBox.getText().toString().isEmpty() && !passBox.getText().toString().isEmpty()) {
             JSONObject jsonOBJ = new JSONObject();
             jsonOBJ.put("numero", userBox.getText().toString());
+            jsonOBJ.put("email", emailBox.getText().toString());
             jsonOBJ.put("password", passBox.getText().toString());
+            jsonOBJ.put("isProf",1);
             JsonObjectRequest jsObjRequest =
-                    new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/login",
+                    new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/register",
                             jsonOBJ,
                             (response -> {
                                 try {
                                     if (response.getInt("status") == 1) {
-                                        changeToDashboard(response.getInt("numeroA"));
+                                        Toast.makeText(this, "Utilizador registado!", Toast.LENGTH_SHORT).show();
+                                        switchToProfLogin();
                                     } else {
-                                        Toast.makeText(this, "Credenciais ou Password errada.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Nome já existe na base de dados!", Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -75,10 +58,12 @@ public class LoginActivity extends AppCompatActivity {
         else{
             Toast.makeText(this, "Preenche todos os campos.", Toast.LENGTH_SHORT).show();
         }
+
     }
-    public void switchToRegister(View v){
-        Intent i=new Intent(this,MainActivity.class);
+    private void switchToProfLogin(){
+        Intent i=new Intent(this, LoginProfsActivity.class);
+        i.putExtra("RegisterNome",userBox.getText().toString());
+        i.putExtra("RegisterPass",passBox.getText().toString());
         startActivity(i);
-        this.finish();
     }
 }

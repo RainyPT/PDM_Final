@@ -14,13 +14,19 @@
         android:theme="@style/Theme.Tisisme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RegisterProfsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginProfsActivity"
+            android:exported="false" />
+        <activity
             android:name=".DashboardAlunoActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginAlunosActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
