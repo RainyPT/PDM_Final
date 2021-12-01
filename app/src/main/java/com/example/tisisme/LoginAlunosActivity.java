@@ -61,7 +61,7 @@ public class LoginAlunosActivity extends AppCompatActivity {
                             (response -> {
                                 try {
                                     if (response.getInt("status") == 1) {
-                                        changeToDashboard(response.getInt("IDA"));
+                                        changeToDashboard(response.getInt("ID"));
                                     } else {
                                         Toast.makeText(this, "Credenciais ou Password errada.", Toast.LENGTH_SHORT).show();
                                     }
