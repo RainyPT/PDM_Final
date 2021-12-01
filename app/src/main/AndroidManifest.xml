@@ -14,26 +14,17 @@
         android:theme="@style/Theme.Tisisme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".RegisterProfsActivity"
+            android:name=".AccountSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginProfsActivity"
+            android:name=".DashboardActivity"
             android:exported="false" />
         <activity
-            android:name=".DashboardAlunoActivity"
-            android:exported="false" />
+            android:name=".LoginActivity"
+            android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
-        <activity
-            android:name=".LoginAlunosActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
