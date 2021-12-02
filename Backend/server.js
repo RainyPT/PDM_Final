@@ -21,6 +21,8 @@ dbase.connect(function (err) {
   if (err) throw err;
   console.log("Database Connected!");
 });
+
+//Now we talking
 app.post("/updateUserInfo", (req, res) => {
   let idType = "IDA";
   let TableToUpdate = "alunos";
@@ -74,7 +76,6 @@ app.post("/updateUserInfo", (req, res) => {
   }
   res.send({ status: 1 });
 });
-//Now we talking
 app.post("/login", (req, res) => {
   let password = req.body.password;
   let isUsernamePresent;
