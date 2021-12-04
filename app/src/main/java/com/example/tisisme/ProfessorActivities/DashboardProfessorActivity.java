@@ -30,6 +30,7 @@ public class DashboardProfessorActivity extends AppCompatActivity {
         professorNameLabelDash=findViewById(R.id.professorNameLabelDash);
         SharedPreferences SP =getApplicationContext().getSharedPreferences("UserInfo", MODE_PRIVATE);
         PrimeiroNome=SP.getString("PrimeiroNome","Unknown");
+        IDDashLabelProfessor.setText(String.valueOf(SP.getInt("ID",-1)));
         buttonCriarCadeira=findViewById(R.id.buttonCriarCadeira);
         if(PrimeiroNome.isEmpty()){
             switchToAccountSettings();

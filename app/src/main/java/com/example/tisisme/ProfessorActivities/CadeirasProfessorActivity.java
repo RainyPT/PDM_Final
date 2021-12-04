@@ -42,11 +42,11 @@ public class CadeirasProfessorActivity extends AppCompatActivity {
                         (response -> {
                             try {
                                 if(response.getInt("status")==1){
-                                   displayCadeiras(response.getJSONArray("cadeiras"));
-                                    Toast.makeText(this, "Registo completado com sucesso!", Toast.LENGTH_SHORT).show();
-                                }
-                                else{
-                                    Toast.makeText(this, "Já existe uma cadeira com esse identificador!", Toast.LENGTH_SHORT).show();
+                                    JSONArray cadeirasJsonArray=response.getJSONArray("cadeiras");
+                                   displayCadeiras(cadeirasJsonArray);
+                                   if(cadeirasJsonArray.length()==0){
+                                       Toast.makeText(this, "Não existem cadeiras", Toast.LENGTH_SHORT).show();
+                                   }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
