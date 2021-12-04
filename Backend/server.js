@@ -1,4 +1,4 @@
-const express = require("express");
+ const express = require("express");
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const app = express();
@@ -163,6 +163,39 @@ app.post("/register", (req, res) => {
     }
   });
 });
+
+app.post("/registerCadeiras", (req, res) => {
+  
+  let cadeira = req.body.nomeCadeira;
+
+  isCadeiraPresent = "SELECT Nome FROM cadeiras WHERE Nome='" + cadeira + "'";
+ 
+  dbase.query(isCadeiraPresent, (err, resultDB1) => {
+    if (err) throw err;
+    if (resultDB1.length > 0) {
+      res.send({ status: 0 });
+    } else {
+      let addUserQuery;
+            addUserQuery = "INSERT INTO cadeiras (Nome) VALUES('" + cadeira +"')";
+          dbase.query(addUserQuery, (err, resultDB2) => {
+            if (err) throw err;
+            res.send({ status: 1 });
+          });
+    }
+  });
+});
+
+app.post("/getCadeiras", (req,res) => {
+
+  queryAllCadeiras = "SELECT Nome FROM cadeiras";
+
+  dbase.query(queryAllCadeiras, (err, resultDB) =>{
+    if(err) throw err;
+    res.send({ status: 1, cadeiras:resultDB});
+  }
+  
+  ) 
+})
 
 app.listen(port, () => {
   console.log("http://localhost:" + port);

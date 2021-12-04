@@ -4,8 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-feature android:name="android.hardware.camera.autoFocus" />
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -18,10 +20,22 @@
         android:theme="@style/Theme.Tisisme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ProfessorActivities.criarCadeirasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfessorActivities.CadeirasProfessorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AlunoActivities.PresencasAluno"
+            android:exported="false" />
+        <activity
             android:name=".AccountSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".AlunoActivities.DashboardAlunoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfessorActivities.DashboardProfessorActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

@@ -12,6 +12,13 @@
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_qread.xml" value="0.1" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_register_profs.xml" value="0.25" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_cadeiras_professor.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_criar_cadeiras.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_dashboard.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_dashboard_professor.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_login.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_presencas_aluno.xml" value="0.365625" />
+        <entry key="..\:/Users/duart/Desktop/PDM_Final/app/src/main/res/layout/activity_register.xml" value="0.365625" />
       </map>
     </option>
   </component>

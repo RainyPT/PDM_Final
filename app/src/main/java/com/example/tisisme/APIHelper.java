@@ -12,7 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class APIHelper {
-    static String URL="http://192.168.1.83:12345";
+    public static String URL="http://192.168.1.111:12345";
     private Context con;
     APIHelper(Context a){
         this.con=a;

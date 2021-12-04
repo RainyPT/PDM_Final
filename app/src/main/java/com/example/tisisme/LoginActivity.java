@@ -17,6 +17,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tisisme.AlunoActivities.DashboardAlunoActivity;
+import com.example.tisisme.ProfessorActivities.DashboardProfessorActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +76,12 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 if(response.getInt("status")==1){
                                     initSharedPrefs(UsernameTextBoxLogin.getText().toString(),isProfSwitch.isChecked(),response.getInt("ID"),response.getString("PN"));
-                                    switchToDashboard();
+                                    if(isProfSwitch.isChecked()){
+                                        Intent i = new Intent(this, DashboardProfessorActivity.class);
+                                        startActivity(i);
+                                    }else {
+                                        switchToDashboard();
+                                    }
                                 }
                                 else{
                                     Toast.makeText(this, "Credenciais erradas!", Toast.LENGTH_SHORT).show();
@@ -100,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.commit();
     }
     public void switchToDashboard(){
-        Intent i =new Intent(this,DashboardActivity.class);
+        Intent i =new Intent(this, DashboardAlunoActivity.class);
         startActivity(i);
         this.finish();
     }
