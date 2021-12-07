@@ -14,7 +14,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tisisme.AlunoActivities.DashboardAlunoActivity;
+import com.example.tisisme.AlunoActivities.DashboardStudentActivity;
+import com.example.tisisme.Classes.APIHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     }
     private void switchToDash(){
-        Intent i=new Intent(this, DashboardAlunoActivity.class);
+        Intent i=new Intent(this, DashboardStudentActivity.class);
         startActivity(i);
     }
     public void ChangeConfig(View v) throws JSONException {

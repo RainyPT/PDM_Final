@@ -1,7 +1,6 @@
-package com.example.tisisme;
+package com.example.tisisme.Classes;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +16,7 @@ public class APIHelper {
     APIHelper(Context a){
         this.con=a;
     }
-    public JSONObject sendPost(JSONObject objectToBeSent,String endpoint){
+    public JSONObject sendPost(JSONObject objectToBeSent,String endpoint) throws InterruptedException {
         RequestQueue queue = Volley.newRequestQueue(this.con);
         JSONObject resOBJ=new JSONObject();
         JsonObjectRequest jsObjRequest =
@@ -38,6 +37,8 @@ public class APIHelper {
                             }
                         }));
         queue.add(jsObjRequest);
+        //dumb attempt to try and fix async.
+        Thread.sleep(500);
         return resOBJ;
     }
 

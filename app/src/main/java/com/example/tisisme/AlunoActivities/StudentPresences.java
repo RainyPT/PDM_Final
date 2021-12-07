@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.example.tisisme.R;
 
-public class PresencasAluno extends AppCompatActivity {
+public class StudentPresences extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

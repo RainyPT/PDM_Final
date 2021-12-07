@@ -13,16 +13,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tisisme.APIHelper;
+import com.example.tisisme.Classes.APIHelper;
 import com.example.tisisme.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Arrays;
-
-public class CadeirasProfessorActivity extends AppCompatActivity {
+public class ProfessorsCoursesActivity extends AppCompatActivity {
 
     Button buttonCriarCadeiras;
     LinearLayout cadeirasProfessor;
@@ -58,7 +55,7 @@ public class CadeirasProfessorActivity extends AppCompatActivity {
     }
 
     public void switchToCriarCadeiras(View v){
-        Intent i =new Intent(this, criarCadeirasActivity.class);
+        Intent i =new Intent(this, CreateCoursesActivity.class);
         startActivity(i);
     }
 

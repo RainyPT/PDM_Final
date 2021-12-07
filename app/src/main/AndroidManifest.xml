@@ -9,7 +9,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -20,19 +20,19 @@
         android:theme="@style/Theme.Tisisme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ProfessorActivities.criarCadeirasActivity"
+            android:name=".ProfessorActivities.CreateCoursesActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfessorActivities.CadeirasProfessorActivity"
+            android:name=".ProfessorActivities.ProfessorsCoursesActivity"
             android:exported="false" />
         <activity
-            android:name=".AlunoActivities.PresencasAluno"
+            android:name=".AlunoActivities.StudentPresences"
             android:exported="false" />
         <activity
             android:name=".AccountSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".AlunoActivities.DashboardAlunoActivity"
+            android:name=".AlunoActivities.DashboardStudentActivity"
             android:exported="false" />
         <activity
             android:name=".ProfessorActivities.DashboardProfessorActivity"

@@ -17,7 +17,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tisisme.AlunoActivities.DashboardAlunoActivity;
+import com.example.tisisme.AlunoActivities.DashboardStudentActivity;
+import com.example.tisisme.Classes.APIHelper;
 import com.example.tisisme.ProfessorActivities.DashboardProfessorActivity;
 
 import org.json.JSONException;
@@ -107,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.commit();
     }
     public void switchToDashboard(){
-        Intent i =new Intent(this, DashboardAlunoActivity.class);
+        Intent i =new Intent(this, DashboardStudentActivity.class);
         startActivity(i);
         this.finish();
     }

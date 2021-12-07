@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tisisme.AccountSettingsActivity;
-import com.example.tisisme.AlunoActivities.PresencasAluno;
 import com.example.tisisme.R;
 
 public class DashboardProfessorActivity extends AppCompatActivity {
@@ -49,7 +48,7 @@ public class DashboardProfessorActivity extends AppCompatActivity {
     }
 
     public void switchToCadeiras(View v){
-        Intent i =new Intent(this, CadeirasProfessorActivity.class);
+        Intent i =new Intent(this, ProfessorsCoursesActivity.class);
         startActivity(i);
     }
 }
