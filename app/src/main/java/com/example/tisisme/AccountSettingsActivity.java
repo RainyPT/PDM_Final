@@ -45,9 +45,12 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     }
     private void switchToDash(){
-        Intent i=new Intent(this, DashboardStudentActivity.class);
+        Intent i;
         if(Tipo.equals("Professor")){
             i=new Intent(this, DashboardProfessorActivity.class);
+        }
+        else{
+            i=new Intent(this, DashboardStudentActivity.class);
         }
         startActivity(i);
     }
@@ -60,7 +63,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             } else {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("PrimeiroNome", PN);
-                editor.commit();
+                editor.apply();
                 UpdateInfo();
             }
         }
