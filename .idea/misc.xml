@@ -4,11 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_account_settings.xml" value="0.25" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_cadeiras_professor.xml" value="0.1" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_create_classes.xml" value="0.33" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_criar_cadeiras.xml" value="0.1" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_dashboard.xml" value="0.18" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_dashboard_aluno.xml" value="0.33" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_dashboard_professor.xml" value="0.1" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_login_profs.xml" value="0.25" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_presencas_aluno.xml" value="0.1911231884057971" />
+        <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_professor_classes.xml" value="0.18" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_qread.xml" value="0.1" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/PDM_Projects/PDM_Final/app/src/main/res/layout/activity_register_profs.xml" value="0.25" />

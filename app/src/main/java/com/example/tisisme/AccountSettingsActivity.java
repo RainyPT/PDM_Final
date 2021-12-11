@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tisisme.AlunoActivities.DashboardStudentActivity;
 import com.example.tisisme.Classes.APIHelper;
+import com.example.tisisme.ProfessorActivities.DashboardProfessorActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
     }
     private void switchToDash(){
         Intent i=new Intent(this, DashboardStudentActivity.class);
+        if(Tipo.equals("Professor")){
+            i=new Intent(this, DashboardProfessorActivity.class);
+        }
         startActivity(i);
     }
     public void ChangeConfig(View v) throws JSONException {

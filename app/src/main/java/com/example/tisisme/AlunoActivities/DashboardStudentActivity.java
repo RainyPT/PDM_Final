@@ -1,29 +1,33 @@
 package com.example.tisisme.AlunoActivities;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationRequest;
-import android.os.Build;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.tisisme.AccountSettingsActivity;
+import com.example.tisisme.Classes.APIHelper;
 import com.example.tisisme.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DashboardStudentActivity extends AppCompatActivity {
     private int ID;
@@ -31,7 +35,9 @@ public class DashboardStudentActivity extends AppCompatActivity {
     TextView IDDashLabel, tipoLabelDash, userNameLabelDash;
     Button QRscanButton;
     Button presencasButton;
-
+    protected LocationManager locationManager;
+    private Location userLocation;
+    RequestQueue queue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +59,13 @@ public class DashboardStudentActivity extends AppCompatActivity {
             Toast.makeText(this, "Tens de guardar o teu primeiro e segundo nome.", Toast.LENGTH_SHORT).show();
         } else {
             userNameLabelDash.setText(PrimeiroNome);
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            startTrackingLocation();
+            queue = Volley.newRequestQueue(this);
         }
     }
-    public void switchToQR(View v) {
 
+    public void switchToQR(View v) {
         IntentIntegrator intentIntegrator = new IntentIntegrator(this);
         intentIntegrator.setDesiredBarcodeFormats(intentIntegrator.ALL_CODE_TYPES);
         intentIntegrator.setBeepEnabled(false);
@@ -66,6 +75,20 @@ public class DashboardStudentActivity extends AppCompatActivity {
         intentIntegrator.initiateScan();
     }
 
+    private void startTrackingLocation(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    userLocation=location;
+                }
+            });
+        }
+        else{
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            startTrackingLocation();
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult Result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -73,20 +96,48 @@ public class DashboardStudentActivity extends AppCompatActivity {
             if (Result.getContents() == null) {
                 Toast.makeText(this, "Leitura QR Cancelada.", Toast.LENGTH_SHORT).show();
             } else {
-                /*Enviar um monte de merdas para a base de dados, e fazer verificação se a data e hora estão dentro dos limites permitidos.
-                Estas verificações devem ser completamente server sided para garantir a melhor proteção/anticheating possivel.*/
-                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Por favor concede permissões de GPS a esta aplicação.", Toast.LENGTH_SHORT).show();
-                    return;
+                int IDP2A=Integer.parseInt(Result.getContents());
+                if(userLocation!=null){
+                    WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                    WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+                    String name = wifiInfo.getSSID();
+                    JSONObject reqOBJ = new JSONObject();
+                    try {
+                        reqOBJ.put("ID",ID);
+                        reqOBJ.put("WifiName",name);
+                        reqOBJ.put("IDP2A",IDP2A);
+                        reqOBJ.put("X",userLocation.getLatitude());
+                        reqOBJ.put("Y",userLocation.getLongitude());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JsonObjectRequest jsObjRequest =
+                            new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/addPresence",
+                                    reqOBJ,
+                                    (response -> {
+                                        try {
+                                            if(response.getInt("status")==1){
+                                                Toast.makeText(this, "Presença marcada!", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else{
+                                                Toast.makeText(this,"Já marcou presença hoje!",Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }), (error -> {
+
+                            }));
+                    queue.add(jsObjRequest);
                 }
-                Toast.makeText(this, locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).toString(), Toast.LENGTH_SHORT).show();
+                else{
+                    Toast.makeText(this, "Certifique-se que o GPS está ligado e/ou espere uns minutos.", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
     private void switchToAccountSettings(){
         Intent i = new Intent(this, AccountSettingsActivity.class);

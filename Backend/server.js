@@ -22,6 +22,24 @@ dbase.connect(function (err) {
   console.log("Database Connected!");
 });
 
+app.post("/addPresence",(req,res)=>{
+  let ID=req.body.ID;
+  let WifiName=req.body.WifiName;
+  let IDP2A=req.body.IDP2A;
+  let coords=[req.body.X,req.body.Y];
+  dbase.query("SELECT IDP2A FROM presencas WHERE IDA="+ID+" AND IDP2A="+IDP2A,(err,resDB1)=>{
+    if (err) throw err;
+    if(resDB1.length==0){
+      dbase.query("Insert into presencas (X,Y,NomeRede,IDA,IDP2A) VALUES("+coords[0]+","+coords[1]+","+WifiName+","+ID+","+IDP2A+")", (err, resDB2) => {
+        if (err) throw err;
+        res.send({"status":1})
+      });
+    }
+    else{
+      res.send({"status":0})
+    }
+  });
+});
 //Now we talking
 app.post("/updateUserInfo", (req, res) => {
   let idType = "IDA";

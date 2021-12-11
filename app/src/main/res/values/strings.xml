@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Tisisme</string>
+    <string-array name="weekDays">
+        <item>Segunda</item>
+        <item>Terça</item>
+        <item>Quarta</item>
+        <item>Quinta</item>
+        <item>Sexta</item>
+    </string-array>
 </resources>
