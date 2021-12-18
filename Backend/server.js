@@ -203,9 +203,9 @@ app.post("/registerCadeiras", (req, res) => {
   });
 });
 
-app.post("/getCadeiras", (req,res) => {
+app.get("/getCadeiras", (req,res) => {
 
-  queryAllCadeiras = "SELECT Nome FROM cadeiras";
+  queryAllCadeiras = "SELECT * FROM cadeiras";
 
   dbase.query(queryAllCadeiras, (err, resultDB) =>{
     if(err) throw err;
@@ -213,6 +213,57 @@ app.post("/getCadeiras", (req,res) => {
   }
   
   ) 
+})
+app.post("/getAulas", (req,res) => {
+  let IDCadeira=req.body.cadeiraID;
+  queryAllAulas = "SELECT IDAu,Tipo FROM aulas WHERE IDC="+IDCadeira;
+
+  dbase.query(queryAllAulas, (err, resultDB) =>{
+    if(err) throw err;
+    res.send({ status: 1, aulas:resultDB});
+  }) 
+})
+app.post("/getIDP2A", (req,res) => {
+  let IDAula=req.body.IDAu;
+  let addIDAuQuery="INSERT INTO p2a (IDAu,Data) VALUES("+IDAula+",CURDATE())";
+  let getIDP2AQuery="SELECT IDP2A FROM p2a WHERE IDAu="+IDAula+" AND Data=CURDATE()"
+
+  dbase.query(getIDP2AQuery, (err, resultDB) =>{
+    if(err) throw err;
+    if(resultDB.length>0){
+      res.send({status:1,IDP2A:resultDB[0].IDP2A})
+    }
+    else{
+      dbase.query(addIDAuQuery, (err, resultD2) =>{
+        if(err) throw err;
+        dbase.query(getIDP2AQuery, (err, resultDB) =>{
+          res.send({status:1,IDP2A:resultDB[0].IDP2A})
+        })
+      })
+    }
+  }) 
+})
+app.post("/addAula", (req,res) => {
+  let IDP=req.body.IDP;
+  let Tipo=req.body.Tipo;
+  let DiaDaSemana=req.body.DiaDaSemana;
+  let Hora=req.body.Hora;
+  let IDC=req.body.IDC;
+  let checkIfClassExists="SELECT Tipo FROM aulas WHERE IDC="+IDC+" AND Tipo='"+Tipo+"'";
+  dbase.query(checkIfClassExists, (err, resultDB) =>{
+    if(err) throw err;
+    if(resultDB.length==0){
+      let addClassQuery="INSERT INTO aulas (Hora,DiaDaSemana,Tipo,IDP,IDC) VALUES(" + Hora +",'"+DiaDaSemana+"','"+Tipo+"',"+IDP+","+IDC+")";
+      dbase.query(addClassQuery, (err, resultDB) =>{
+        if(err) throw err;
+        res.send({ status: 1, aulas:resultDB});
+      })
+    }
+    else{
+      res.send({ status: 0});
+    }
+    
+  }) 
 })
 
 app.listen(port, () => {

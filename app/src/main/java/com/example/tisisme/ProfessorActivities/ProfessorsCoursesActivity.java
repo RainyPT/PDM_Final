@@ -2,7 +2,9 @@ package com.example.tisisme.ProfessorActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,11 +32,11 @@ public class ProfessorsCoursesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadeiras_professor);
         buttonCriarCadeiras=findViewById(R.id.buttonCriarCadeira);
-        cadeirasProfessor=findViewById(R.id.cadeirasProfessor);
+        cadeirasProfessor=findViewById(R.id.AulasProfessor);
         queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest jsObjRequest =
-                new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/getCadeiras",
+                new JsonObjectRequest(Request.Method.GET, APIHelper.URL + "/getCadeiras",
                         null,
                         (response -> {
                             try {
@@ -59,11 +61,28 @@ public class ProfessorsCoursesActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void displayCadeiras(JSONArray nomesCadeiras) throws JSONException {
+    private void displayCadeiras(JSONArray cadeirasArray) throws JSONException {
         cadeirasProfessor.removeAllViews();
-        for(int i=0; i<nomesCadeiras.length(); i++){
+        for(int i=0; i<cadeirasArray.length(); i++){
             Button a = new Button(this);
-            a.setText(nomesCadeiras.getJSONObject(i).getString("Nome"));
+            a.setText(cadeirasArray.getJSONObject(i).getString("Nome"));
+            final int tempi= i;
+            a.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        int cadeiraID=cadeirasArray.getJSONObject(tempi).getInt("IDC");
+                        Intent i=new Intent(ProfessorsCoursesActivity.this,ProfessorClassesActivity.class);
+                        SharedPreferences sp=getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor=sp.edit();
+                        editor.putInt("SelectedCadeira",cadeiraID);
+                        editor.commit();
+                        startActivity(i);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             cadeirasProfessor.addView(a);
         }
     }

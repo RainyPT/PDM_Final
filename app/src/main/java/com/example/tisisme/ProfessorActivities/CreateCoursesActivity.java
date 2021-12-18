@@ -45,7 +45,7 @@ public class CreateCoursesActivity extends AppCompatActivity {
                         (response -> {
                             try {
                                 if(response.getInt("status")==1){
-                                    switchToCadeiras();
+                                    switchToCadeiras(response.getInt("IDC"));
                                     Toast.makeText(this, "Registo completado com sucesso!", Toast.LENGTH_SHORT).show();
                                 }
                                 else{
@@ -61,8 +61,9 @@ public class CreateCoursesActivity extends AppCompatActivity {
     }
 
 
-    public void switchToCadeiras(){
+    public void switchToCadeiras(int IDC){
         Intent i =new Intent(this, ProfessorsCoursesActivity.class);
+        i.putExtra("IDC",IDC);
         startActivity(i);
     }
 }
