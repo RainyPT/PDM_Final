@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ResponseDelivery;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -11,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class APIHelper {
-    public static String URL="http://192.168.1.83:12345";
+    public static String URL="http://192.168.206.58:27015";
     private Context con;
     APIHelper(Context a){
         this.con=a;
@@ -37,8 +40,6 @@ public class APIHelper {
                             }
                         }));
         queue.add(jsObjRequest);
-        //dumb attempt to try and fix async.
-        Thread.sleep(500);
         return resOBJ;
     }
 
