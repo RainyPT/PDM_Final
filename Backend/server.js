@@ -27,6 +27,19 @@ app.post("/addPresence",(req,res)=>{
   let WifiName=req.body.WifiName;
   let IDP2A=req.body.IDP2A;
   let coords=[req.body.X,req.body.Y];
+  dbase.query("SELECT IDAu FROM p2a WHERE IDP2A="+IDP2A,(err,resDB1)=>{
+    if (err) throw err;
+    dbase.query("SELECT IDC FROM aulas WHERE IDAu="+resDB1[0].IDAu,(err,resDB2)=>{
+    dbase.query("SELECT * FROM inscricao WHERE IDC="+resDB2[0].IDC+" AND IDA="+ID,(err,resDB3)=>{
+      if (err) throw err;
+      if(resDB3.length==0){
+        dbase.query("INSERT INTO inscricao(IDC,IDA) VALUES("+resDB2[0].IDC+","+ID+")",(err,resDBx)=>{
+          if (err) throw err;
+        })
+      }
+    })
+  })
+  })
   dbase.query("SELECT IDP2A FROM presencas WHERE IDA="+ID+" AND IDP2A="+IDP2A,(err,resDB1)=>{
     if (err) throw err;
     if(resDB1.length==0){
@@ -203,6 +216,39 @@ app.post("/registerCadeiras", (req, res) => {
   });
 });
 
+app.post("/getPresencasOfAluno",(req,res)=>{
+  queryGetIDP2A="SELECT IDP2A FROM presencas WHERE IDA="+req.body.IDA;
+  dbase.query(queryGetIDP2A, (err, resultDB) =>{
+    let Nomes=[]
+    let Datas=[]
+    for(let i=0;i<resultDB.length;i++){
+      let getIDCQuery="SELECT Nome,DATE(IDCTable.Data)as Data FROM cadeiras,(SELECT IDC,IDAuTable.Data FROM(SELECT IDAu,Data FROM p2a WHERE IDP2A="+resultDB[i].IDP2A+") as IDAuTable,aulas WHERE aulas.IDAu=IDAuTable.IDAu) as IDCTable WHERE cadeiras.IDC=IDCTable.IDC"
+      dbase.query(getIDCQuery ,(err, resultDB2) =>{
+        if(err)throw err;
+        Nomes[i]=resultDB2[i].Nome;
+        console.log(resultDB2[i])
+        Datas[i]=resultDB2[i].Data;
+        if(i+1==resultDB.length){
+          res.send({CadeirasNomes:Nomes,AulasData:Datas})
+        }
+
+      })
+    }
+  })
+})
+app.post("/getPresencas",(req,res)=>{
+  queryGetIDP2A="SELECT IDP2A FROM p2a WHERE IDAu="+req.body.IDAu+" AND Data=CURDATE()"
+  dbase.query(queryGetIDP2A, (err, resultDB) =>{
+    if(err) throw err;
+    if(resultDB.length>0){
+      queryAllPresencas="SELECT IDA FROM presencas WHERE IDP2A="+resultDB[0].IDP2A
+      dbase.query(queryAllPresencas, (err, resultDB2) =>{
+        if(err) throw err;
+        res.send({status:1,presencas:resultDB2})
+      })
+    }
+  })
+})
 app.get("/getCadeiras", (req,res) => {
 
   queryAllCadeiras = "SELECT * FROM cadeiras";
