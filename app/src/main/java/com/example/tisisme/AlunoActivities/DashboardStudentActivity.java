@@ -120,7 +120,7 @@ public class DashboardStudentActivity extends AppCompatActivity {
             if (Result.getContents() == null) {
                 Toast.makeText(this, "Leitura QR Cancelada.", Toast.LENGTH_SHORT).show();
             } else {
-                int IDP2A=Integer.parseInt(Result.getContents());
+                int IDAu=Integer.parseInt(Result.getContents());
                 if(userLocation!=null){
                     WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
                     WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
@@ -129,7 +129,7 @@ public class DashboardStudentActivity extends AppCompatActivity {
                     try {
                         reqOBJ.put("ID",ID);
                         reqOBJ.put("WifiName",name);
-                        reqOBJ.put("IDP2A",IDP2A);
+                        reqOBJ.put("IDAu",IDAu);
                         reqOBJ.put("X",userLocation.getLatitude());
                         reqOBJ.put("Y",userLocation.getLongitude());
                     } catch (JSONException e) {
@@ -170,7 +170,7 @@ public class DashboardStudentActivity extends AppCompatActivity {
     }
 
     public void switchToPresencasAluno(View v){
-        Intent i =new Intent(this, StudentPresences.class);
+        Intent i =new Intent(this, StudentSelectClass.class);
         startActivity(i);
     }
 }

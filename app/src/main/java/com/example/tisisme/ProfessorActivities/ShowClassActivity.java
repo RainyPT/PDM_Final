@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -34,11 +35,13 @@ public class ShowClassActivity extends AppCompatActivity {
     int IDAu;
     RequestQueue queue;
     LinearLayout presencasLayout;
+    TextView assMediaLabel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_class);
         presencasLayout=findViewById(R.id.listaPresencasNaAula);
+        assMediaLabel=findViewById(R.id.assMediaLabel);
         queue= Volley.newRequestQueue(this);
         Intent i=getIntent();
         IDAu=i.getIntExtra("IDAu",-1);
@@ -58,22 +61,18 @@ public class ShowClassActivity extends AppCompatActivity {
                         reqOBJ,
                         (response -> {
                             try {
-                                if(response.getInt("status")==1){
+                                if (response.getInt("status") == 1) {
                                     presencasLayout.removeAllViews();
-                                    JSONArray presArray=response.getJSONArray("presencas");
-                                    for(int i=0;i<presArray.length();i++){
+                                    JSONArray presArray = response.getJSONArray("presencas");
+                                    Double assMedia=response.getDouble("assMedia");
+                                    assMediaLabel.setText(assMedia+"%");
+                                    for (int i = 0; i < presArray.length(); i++) {
                                         Button a = new Button(this);
                                         a.setText(presArray.getJSONObject(i).getString("IDA"));
-                                        final int tempi= i;
                                         a.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                try {
-                                                    int aulaID = presArray.getJSONObject(tempi).getInt("IDAu");
-                                                    Toast.makeText(ShowClassActivity.this, "" + aulaID, Toast.LENGTH_SHORT).show();
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
+                                                Toast.makeText(ShowClassActivity.this, "Coming soon!", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                         presencasLayout.addView(a);
@@ -88,28 +87,8 @@ public class ShowClassActivity extends AppCompatActivity {
         queue.add(jsObjRequest);
     }
     public void genQRForClass(View view) throws JSONException{
-        JSONObject reqOBJ =new JSONObject();
-        reqOBJ.put("IDAu",IDAu);
-        JsonObjectRequest jsObjRequest =
-                new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/getIDP2A",
-                        reqOBJ,
-                        (response -> {
-                            try {
-                                if(response.getInt("status")==1){
-                                    switchToQRActivity(response.getInt("IDP2A"));
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }), (error -> {
-
-                }));
-        queue.add(jsObjRequest);
-    }
-
-    private void switchToQRActivity(int idp2a){
         Intent i =new Intent(this,ShowQRActivity.class);
-        i.putExtra("IDP2A",idp2a);
+        i.putExtra("IDAu",IDAu);
         startActivity(i);
     }
 

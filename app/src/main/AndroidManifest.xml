@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Tisisme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".AlunoActivities.StudentSelectClass"
+            android:exported="false" />
+        <activity
             android:name=".ProfessorActivities.ShowQRActivity"
             android:exported="false" />
         <activity

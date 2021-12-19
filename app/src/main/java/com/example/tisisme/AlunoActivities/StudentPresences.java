@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,8 +16,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tisisme.Classes.APIHelper;
-import com.example.tisisme.ProfessorActivities.ProfessorClassesActivity;
-import com.example.tisisme.ProfessorActivities.ShowClassActivity;
 import com.example.tisisme.R;
 
 import org.json.JSONArray;
@@ -33,12 +31,15 @@ public class StudentPresences extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_presencas_aluno);
         queue= Volley.newRequestQueue(this);
-        listaPresencas=findViewById(R.id.listapresencasaluno);
+        listaPresencas=findViewById(R.id.listaCadeirasPresencas);
+        Intent i=getIntent();
+        int IDAu=i.getIntExtra("IDAu",-1);
         SharedPreferences SP =getApplicationContext().getSharedPreferences("UserInfo", MODE_PRIVATE);
         int IDA=SP.getInt("ID",-1);
         JSONObject reqOBJ=new JSONObject();
         try {
             reqOBJ.put("IDA",IDA);
+            reqOBJ.put("IDAu",IDAu);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -47,7 +48,7 @@ public class StudentPresences extends AppCompatActivity {
                         reqOBJ,
                         (response -> {
                             try {
-                                displayPresencas(response.getJSONArray("CadeirasNomes"),response.getJSONArray("AulasData"));
+                                displayPresencas(response.getJSONArray("aulas"),response.getJSONArray("faltas"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -56,13 +57,27 @@ public class StudentPresences extends AppCompatActivity {
                 }));
         queue.add(jsObjRequest);
     }
-    private void displayPresencas(JSONArray p,JSONArray d) throws JSONException {
+    private void displayPresencas(JSONArray p,JSONArray f) throws JSONException {
+        listaPresencas.removeAllViews();
+        boolean wasMissed=false;
         for(int i=0;i<p.length();i++){
-
+            for(int x=0;x<f.length();x++){
+                System.out.println(p.getJSONObject(i).getString("Data").split("T")[0]+" "+f.getJSONObject(x).getString("Data").split("T")[0]);
+                if(p.getJSONObject(i).getString("Data").split("T")[0].equals(f.getJSONObject(x).getString("Data").split("T")[0])){
+                    wasMissed=true;
+                }
+            }
             TextView a = new TextView(this);
-            a.setText("Cadeira-Aula: "+p.getString(i)+" no dia "+d.getString(i).split("T")[0]);
+            a.setText("Data: "+p.getJSONObject(i).getString("Data").split("T")[0]);
+            if(wasMissed){
+                a.setBackgroundColor(Color.RED);
+            }
+            else{
+                a.setBackgroundColor(Color.GREEN);
+            }
             a.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             a.setTextSize(20.0f);
+            wasMissed=false;
             listaPresencas.addView(a);
         }
     }

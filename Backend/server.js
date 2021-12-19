@@ -21,37 +21,40 @@ dbase.connect(function (err) {
   if (err) throw err;
   console.log("Database Connected!");
 });
-
 app.post("/addPresence",(req,res)=>{
   let ID=req.body.ID;
   let WifiName=req.body.WifiName;
-  let IDP2A=req.body.IDP2A;
+  let IDAu=req.body.IDAu;
   let coords=[req.body.X,req.body.Y];
-  dbase.query("SELECT IDAu FROM p2a WHERE IDP2A="+IDP2A,(err,resDB1)=>{
-    if (err) throw err;
-    dbase.query("SELECT IDC FROM aulas WHERE IDAu="+resDB1[0].IDAu,(err,resDB2)=>{
-    dbase.query("SELECT * FROM inscricao WHERE IDC="+resDB2[0].IDC+" AND IDA="+ID,(err,resDB3)=>{
-      if (err) throw err;
-      if(resDB3.length==0){
-        dbase.query("INSERT INTO inscricao(IDC,IDA) VALUES("+resDB2[0].IDC+","+ID+")",(err,resDBx)=>{
-          if (err) throw err;
-        })
-      }
-    })
-  })
-  })
-  dbase.query("SELECT IDP2A FROM presencas WHERE IDA="+ID+" AND IDP2A="+IDP2A,(err,resDB1)=>{
-    if (err) throw err;
+  dbase.query("SELECT * FROM presencas WHERE IDA="+ID+" AND CURDATE()=DATE(Data) AND IDAu="+IDAu,(err,resDB1)=>{
+    if(err) throw err;
     if(resDB1.length==0){
-      dbase.query("Insert into presencas (X,Y,NomeRede,IDA,IDP2A) VALUES("+coords[0]+","+coords[1]+","+WifiName+","+ID+","+IDP2A+")", (err, resDB2) => {
-        if (err) throw err;
-        res.send({"status":1})
-      });
+      //adicionar ifs localização e wifiname
+      dbase.query("SELECT IDAu FROM inscricao WHERE IDA="+ID,(err,resDB2)=>{
+        if(err) throw err;
+        if(resDB2.length==0){
+          dbase.query("INSERT INTO inscricao(IDAu,IDA) VALUES("+IDAu+","+ID+")",(err,resDB1)=>{
+            if(err) throw err;
+          });
+        }
+      })
+      dbase.query("SELECT Hora FROM aulas WHERE IDAu="+IDAu+" AND HOUR(NOW()) BETWEEN Hora AND (Hora+1)",(err,resDB3)=>{
+        if(err)throw err;
+        if(resDB3.length>0){
+          dbase.query("INSERT INTO presencas(IDAu,IDA,NomeRede,Data,X,Y) VALUES("+IDAu+","+ID+","+WifiName+",NOW(),"+coords[0]+","+coords[1]+")",(err,resDB1)=>{
+            if(err) throw err;
+            res.send({status:1})
+          });
+        }
+        else{
+          res.send({status:0});
+        }
+      })
     }
     else{
-      res.send({"status":0})
+      res.send({status:0});
     }
-  });
+  })
 });
 //Now we talking
 app.post("/updateUserInfo", (req, res) => {
@@ -217,36 +220,35 @@ app.post("/registerCadeiras", (req, res) => {
 });
 
 app.post("/getPresencasOfAluno",(req,res)=>{
-  queryGetIDP2A="SELECT IDP2A FROM presencas WHERE IDA="+req.body.IDA;
-  dbase.query(queryGetIDP2A, (err, resultDB) =>{
-    let Nomes=[]
-    let Datas=[]
-    for(let i=0;i<resultDB.length;i++){
-      let getIDCQuery="SELECT Nome,DATE(IDCTable.Data) as Data,IDCTable.Tipo FROM cadeiras,(SELECT IDC,IDAuTable.Data,Tipo FROM(SELECT IDAu,Data FROM p2a WHERE IDP2A="+resultDB[i].IDP2A+") as IDAuTable,aulas WHERE aulas.IDAu=IDAuTable.IDAu) as IDCTable WHERE cadeiras.IDC=IDCTable.IDC"
-      dbase.query(getIDCQuery ,(err, resultDB2) =>{
-        if(err)throw err;
-        Nomes[i]=resultDB2[0].Nome+"-"+resultDB2[0].Tipo;
-        Datas[i]=resultDB2[0].Data;
-        if(i+1==resultDB.length){
-          console.log(Nomes)
-          res.send({CadeirasNomes:Nomes,AulasData:Datas})
-        }
-
-      })
-    }
+  let IDA=req.body.IDA;
+  let IDAu=req.body.IDAu;
+  queryGetAllClasses="SELECT CAST(Data AS DATE) as Data FROM presencas WHERE IDAu="+IDAu+" GROUP BY CAST(Data AS DATE)"
+  dbase.query(queryGetAllClasses, (err, resultDB) =>{
+    if(err)throw err;
+    queryGetAllMissedClasses="SELECT CAST(Data AS DATE) as Data FROM presencas WHERE IDAu="+IDAu+" AND IDA!="+IDA+" GROUP BY CAST(Data AS DATE)"
+    dbase.query(queryGetAllMissedClasses, (err, resultDB2) =>{
+      if(err)throw err;
+      res.send({status:1,faltas:resultDB2,aulas:resultDB})
+    })
+  })
+})
+app.post("/getEnrolledClasses",(req,res)=>{
+queryAllClasses="SELECT aulas.Tipo,cadeiras.Nome,IDAuTable.IDAu FROM(SELECT IDAu FROM inscricao WHERE IDA="+req.body.IDA+") as IDAuTable,aulas,cadeiras WHERE IDAuTable.IDAu=aulas.IDAu AND aulas.IDC=cadeiras.IDC";
+  dbase.query(queryAllClasses, (err, resultDB1) =>{
+    if(err) throw err;
+    res.send({status:1,cadeiras:resultDB1})
   })
 })
 app.post("/getPresencas",(req,res)=>{
-  queryGetIDP2A="SELECT IDP2A FROM p2a WHERE IDAu="+req.body.IDAu+" AND Data=CURDATE()"
-  dbase.query(queryGetIDP2A, (err, resultDB) =>{
+  queryAllPresencas="SELECT IDA FROM presencas WHERE IDAu="+req.body.IDAu+" AND CAST(Data AS DATE)=CURDATE()"
+  dbase.query(queryAllPresencas, (err, resultDB) =>{
     if(err) throw err;
-    if(resultDB.length>0){
-      queryAllPresencas="SELECT IDA FROM presencas WHERE IDP2A="+resultDB[0].IDP2A
-      dbase.query(queryAllPresencas, (err, resultDB2) =>{
-        if(err) throw err;
-        res.send({status:1,presencas:resultDB2})
-      })
-    }
+
+    queryAllInscritos="SELECT COUNT(IDA) as TOTAL FROM inscricao WHERE IDAu="+req.body.IDAu
+    dbase.query(queryAllInscritos, (err, resultDB2) =>{
+      if(err) throw err;
+      res.send({status:1,presencas:resultDB,assMedia:(resultDB.length/parseFloat(resultDB2[0].TOTAL)*100)})
+    })
   })
 })
 app.get("/getCadeiras", (req,res) => {
@@ -267,26 +269,6 @@ app.post("/getAulas", (req,res) => {
   dbase.query(queryAllAulas, (err, resultDB) =>{
     if(err) throw err;
     res.send({ status: 1, aulas:resultDB});
-  }) 
-})
-app.post("/getIDP2A", (req,res) => {
-  let IDAula=req.body.IDAu;
-  let addIDAuQuery="INSERT INTO p2a (IDAu,Data) VALUES("+IDAula+",CURDATE())";
-  let getIDP2AQuery="SELECT IDP2A FROM p2a WHERE IDAu="+IDAula+" AND Data=CURDATE()"
-
-  dbase.query(getIDP2AQuery, (err, resultDB) =>{
-    if(err) throw err;
-    if(resultDB.length>0){
-      res.send({status:1,IDP2A:resultDB[0].IDP2A})
-    }
-    else{
-      dbase.query(addIDAuQuery, (err, resultD2) =>{
-        if(err) throw err;
-        dbase.query(getIDP2AQuery, (err, resultDB) =>{
-          res.send({status:1,IDP2A:resultDB[0].IDP2A})
-        })
-      })
-    }
   }) 
 })
 app.post("/addAula", (req,res) => {

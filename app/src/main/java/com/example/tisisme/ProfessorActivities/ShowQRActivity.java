@@ -28,8 +28,8 @@ public class ShowQRActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_qractivity);
         qrCodeIV = findViewById(R.id.idIVQrcode);
         Intent i=getIntent();
-        int IDP2A=i.getIntExtra("IDP2A",-1);
-        if(IDP2A!=-1) {
+        int IDAu=i.getIntExtra("IDAu",-1);
+        if(IDAu!=-1) {
             WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
             Display display = manager.getDefaultDisplay();
             Point point = new Point();
@@ -38,7 +38,7 @@ public class ShowQRActivity extends AppCompatActivity {
             int height = point.y;
             int dimen = width < height ? width : height;
             dimen = dimen * 3 / 4;
-            qrgEncoder = new QRGEncoder(String.valueOf(IDP2A), null, QRGContents.Type.TEXT, dimen);
+            qrgEncoder = new QRGEncoder(String.valueOf(IDAu), null, QRGContents.Type.TEXT, dimen);
             try {
                 bitmap = qrgEncoder.encodeAsBitmap();
                 qrCodeIV.setImageBitmap(bitmap);
