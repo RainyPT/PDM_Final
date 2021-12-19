@@ -222,13 +222,13 @@ app.post("/getPresencasOfAluno",(req,res)=>{
     let Nomes=[]
     let Datas=[]
     for(let i=0;i<resultDB.length;i++){
-      let getIDCQuery="SELECT Nome,DATE(IDCTable.Data)as Data FROM cadeiras,(SELECT IDC,IDAuTable.Data FROM(SELECT IDAu,Data FROM p2a WHERE IDP2A="+resultDB[i].IDP2A+") as IDAuTable,aulas WHERE aulas.IDAu=IDAuTable.IDAu) as IDCTable WHERE cadeiras.IDC=IDCTable.IDC"
+      let getIDCQuery="SELECT Nome,DATE(IDCTable.Data) as Data,IDCTable.Tipo FROM cadeiras,(SELECT IDC,IDAuTable.Data,Tipo FROM(SELECT IDAu,Data FROM p2a WHERE IDP2A="+resultDB[i].IDP2A+") as IDAuTable,aulas WHERE aulas.IDAu=IDAuTable.IDAu) as IDCTable WHERE cadeiras.IDC=IDCTable.IDC"
       dbase.query(getIDCQuery ,(err, resultDB2) =>{
         if(err)throw err;
-        Nomes[i]=resultDB2[i].Nome;
-        console.log(resultDB2[i])
-        Datas[i]=resultDB2[i].Data;
+        Nomes[i]=resultDB2[0].Nome+"-"+resultDB2[0].Tipo;
+        Datas[i]=resultDB2[0].Data;
         if(i+1==resultDB.length){
+          console.log(Nomes)
           res.send({CadeirasNomes:Nomes,AulasData:Datas})
         }
 

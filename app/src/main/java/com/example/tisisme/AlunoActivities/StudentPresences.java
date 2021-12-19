@@ -60,7 +60,7 @@ public class StudentPresences extends AppCompatActivity {
         for(int i=0;i<p.length();i++){
 
             TextView a = new TextView(this);
-            a.setText("Cadeira: "+p.getString(i)+" às "+d.getString(i).split("T")[0]);
+            a.setText("Cadeira-Aula: "+p.getString(i)+" no dia "+d.getString(i).split("T")[0]);
             a.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             a.setTextSize(20.0f);
             listaPresencas.addView(a);

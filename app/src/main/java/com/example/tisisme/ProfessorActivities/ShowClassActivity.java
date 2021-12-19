@@ -43,19 +43,41 @@ public class ShowClassActivity extends AppCompatActivity {
         Intent i=getIntent();
         IDAu=i.getIntExtra("IDAu",-1);
 
-        JSONObject reqOBJ =new JSONObject();
         try {
-            reqOBJ.put("IDAu",IDAu);
+            displayPresencas();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void displayPresencas() throws JSONException {
+        JSONObject reqOBJ =new JSONObject();
+        reqOBJ.put("IDAu",IDAu);
         JsonObjectRequest jsObjRequest =
                 new JsonObjectRequest(Request.Method.POST, APIHelper.URL + "/getPresencas",
                         reqOBJ,
                         (response -> {
                             try {
                                 if(response.getInt("status")==1){
-                                    displayPresencas(response.getJSONArray("presencas"));
+                                    presencasLayout.removeAllViews();
+                                    JSONArray presArray=response.getJSONArray("presencas");
+                                    for(int i=0;i<presArray.length();i++){
+                                        Button a = new Button(this);
+                                        a.setText(presArray.getJSONObject(i).getString("IDA"));
+                                        final int tempi= i;
+                                        a.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                try {
+                                                    int aulaID = presArray.getJSONObject(tempi).getInt("IDAu");
+                                                    Toast.makeText(ShowClassActivity.this, "" + aulaID, Toast.LENGTH_SHORT).show();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                        presencasLayout.addView(a);
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -64,26 +86,6 @@ public class ShowClassActivity extends AppCompatActivity {
 
                 }));
         queue.add(jsObjRequest);
-    }
-
-    private void displayPresencas(JSONArray presArray) throws JSONException {
-        for(int i=0;i<presArray.length();i++){
-            Button a = new Button(this);
-            a.setText(presArray.getJSONObject(i).getString("IDA"));
-            final int tempi= i;
-            a.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        int aulaID = presArray.getJSONObject(tempi).getInt("IDAu");
-                        Toast.makeText(ShowClassActivity.this, "" + aulaID, Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            presencasLayout.addView(a);
-        }
     }
     public void genQRForClass(View view) throws JSONException{
         JSONObject reqOBJ =new JSONObject();
@@ -111,4 +113,7 @@ public class ShowClassActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void refreshPage(View view) throws JSONException {
+        displayPresencas();
+    }
 }
