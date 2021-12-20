@@ -17,7 +17,7 @@ public class DashboardProfessorActivity extends AppCompatActivity {
 
     private int ID;
     private String PrimeiroNome;
-    TextView IDDashLabelProfessor,tipoLabelDash,professorNameLabelDash;
+    TextView IDDashLabelProfessor,professorNameLabelDash;
     Button buttonCriarCadeira;
 
     @Override
@@ -25,7 +25,6 @@ public class DashboardProfessorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_professor);
         IDDashLabelProfessor=findViewById(R.id.IDDashLabelProfessor);
-        tipoLabelDash=findViewById(R.id.tipoLabelDash);
         professorNameLabelDash=findViewById(R.id.professorNameLabelDash);
         SharedPreferences SP =getApplicationContext().getSharedPreferences("UserInfo", MODE_PRIVATE);
         PrimeiroNome=SP.getString("PrimeiroNome","Unknown");

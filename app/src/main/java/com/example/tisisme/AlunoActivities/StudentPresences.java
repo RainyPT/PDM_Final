@@ -48,7 +48,7 @@ public class StudentPresences extends AppCompatActivity {
                         reqOBJ,
                         (response -> {
                             try {
-                                displayPresencas(response.getJSONArray("aulas"),response.getJSONArray("faltas"));
+                                displayPresencas(response.getJSONArray("faltas"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -57,27 +57,14 @@ public class StudentPresences extends AppCompatActivity {
                 }));
         queue.add(jsObjRequest);
     }
-    private void displayPresencas(JSONArray p,JSONArray f) throws JSONException {
+    private void displayPresencas(JSONArray f) throws JSONException {
         listaPresencas.removeAllViews();
-        boolean wasMissed=false;
-        for(int i=0;i<p.length();i++){
-            for(int x=0;x<f.length();x++){
-                System.out.println(p.getJSONObject(i).getString("Data").split("T")[0]+" "+f.getJSONObject(x).getString("Data").split("T")[0]);
-                if(p.getJSONObject(i).getString("Data").split("T")[0].equals(f.getJSONObject(x).getString("Data").split("T")[0])){
-                    wasMissed=true;
-                }
-            }
+        for(int i=0;i<f.length();i++){
             TextView a = new TextView(this);
-            a.setText("Data: "+p.getJSONObject(i).getString("Data").split("T")[0]);
-            if(wasMissed){
-                a.setBackgroundColor(Color.RED);
-            }
-            else{
-                a.setBackgroundColor(Color.GREEN);
-            }
+            a.setText("Data: "+f.getJSONObject(i).getString("Data").split("T")[0]);
+            a.setBackgroundColor(Color.RED);
             a.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             a.setTextSize(20.0f);
-            wasMissed=false;
             listaPresencas.addView(a);
         }
     }

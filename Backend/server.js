@@ -28,12 +28,12 @@ app.post("/addPresence",(req,res)=>{
   let coords=[req.body.X,req.body.Y];
   dbase.query("SELECT * FROM presencas WHERE IDA="+ID+" AND CURDATE()=DATE(Data) AND IDAu="+IDAu,(err,resDB1)=>{
     if(err) throw err;
-    if(resDB1.length==0){
-      //adicionar ifs localização e wifiname
-      dbase.query("SELECT IDAu FROM inscricao WHERE IDA="+ID,(err,resDB2)=>{
+    if(resDB1.length===0){
+      dbase.query("SELECT IDAu FROM inscricao WHERE IDA="+ID+" AND IDAu="+IDAu,(err,resDB2)=>{
         if(err) throw err;
-        if(resDB2.length==0){
-          dbase.query("INSERT INTO inscricao(IDAu,IDA) VALUES("+IDAu+","+ID+")",(err,resDB1)=>{
+        console.log(resDB2)
+        if(resDB2.length===0){
+          dbase.query("INSERT INTO inscricao(IDAu,IDA) VALUES("+IDAu+","+ID+")",(err,resDB3)=>{
             if(err) throw err;
           });
         }
@@ -222,14 +222,10 @@ app.post("/registerCadeiras", (req, res) => {
 app.post("/getPresencasOfAluno",(req,res)=>{
   let IDA=req.body.IDA;
   let IDAu=req.body.IDAu;
-  queryGetAllClasses="SELECT CAST(Data AS DATE) as Data FROM presencas WHERE IDAu="+IDAu+" GROUP BY CAST(Data AS DATE)"
-  dbase.query(queryGetAllClasses, (err, resultDB) =>{
+  queryGetAllMissedClasses="SELECT CAST(Data AS DATE) as Data FROM presencas WHERE IDAu="+IDAu+" AND IDA!="+IDA+" GROUP BY CAST(Data AS DATE)"
+  dbase.query(queryGetAllMissedClasses, (err, resultDB2) =>{
     if(err)throw err;
-    queryGetAllMissedClasses="SELECT CAST(Data AS DATE) as Data FROM presencas WHERE IDAu="+IDAu+" AND IDA!="+IDA+" GROUP BY CAST(Data AS DATE)"
-    dbase.query(queryGetAllMissedClasses, (err, resultDB2) =>{
-      if(err)throw err;
-      res.send({status:1,faltas:resultDB2,aulas:resultDB})
-    })
+    res.send({status:1,faltas:resultDB2})
   })
 })
 app.post("/getEnrolledClasses",(req,res)=>{
@@ -247,6 +243,7 @@ app.post("/getPresencas",(req,res)=>{
     queryAllInscritos="SELECT COUNT(IDA) as TOTAL FROM inscricao WHERE IDAu="+req.body.IDAu
     dbase.query(queryAllInscritos, (err, resultDB2) =>{
       if(err) throw err;
+      console.log(parseFloat(resultDB2[0].TOTAL));
       res.send({status:1,presencas:resultDB,assMedia:(resultDB.length/parseFloat(resultDB2[0].TOTAL)*100)})
     })
   })

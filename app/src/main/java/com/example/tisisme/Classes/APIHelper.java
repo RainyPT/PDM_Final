@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class APIHelper {
-    public static String URL="http://192.168.1.83:27015";
+    public static String URL="http://161.230.225.30:27015";
 
 
 
